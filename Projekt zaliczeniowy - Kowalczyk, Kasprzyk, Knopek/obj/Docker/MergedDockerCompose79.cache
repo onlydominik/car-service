@@ -1,0 +1,67 @@
+name: dockercompose2000000879749603360
+services:
+  angular-app:
+    build:
+      context: C:\Users\kdomi\Desktop\VISUAL-STUDIO APP
+      dockerfile: appname/Dockerfile
+    container_name: angular-app
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 4200
+        published: "4200"
+        protocol: tcp
+  db:
+    container_name: mysql-db
+    environment:
+      MYSQL_DATABASE: programowanieZaawansowane
+      MYSQL_ROOT_PASSWORD: Domcio112!
+    image: mysql
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 3306
+        published: "3307"
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: C:\Users\kdomi\Desktop\VISUAL-STUDIO APP\mysql-dump
+        target: /docker-entrypoint-initdb.d
+        bind:
+          create_host_path: true
+  programowanie_lab2:
+    build:
+      context: C:\Users\kdomi\Desktop\VISUAL-STUDIO APP
+      dockerfile: Programowanie_Lab2\Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: "8080"
+      ASPNETCORE_HTTPS_PORTS: "8081"
+    image: programowanielab2
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 8080
+        protocol: tcp
+      - mode: ingress
+        target: 8081
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: C:\Users\kdomi\AppData\Roaming/Microsoft/UserSecrets
+        target: /home/app/.microsoft/usersecrets
+        read_only: true
+        bind:
+          create_host_path: true
+      - type: bind
+        source: C:\Users\kdomi\AppData\Roaming/ASP.NET/Https
+        target: /home/app/.aspnet/https
+        read_only: true
+        bind:
+          create_host_path: true
+networks:
+  default:
+    name: dockercompose2000000879749603360_default

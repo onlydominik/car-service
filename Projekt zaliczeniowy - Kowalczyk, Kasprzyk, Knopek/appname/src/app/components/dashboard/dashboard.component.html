@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+    <!-- Favicon-->
+
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="dashboard.component.scss" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div class="d-flex" id="wrapper">
+      <!-- Sidebar-->
+      <div class="border-end bg-white" id="sidebar-wrapper">
+        <div class="list-group list-group-flush">
+          <a
+            class="list-group-item list-group-item-action list-group-item-light p-4 px-5"
+            href="#!"
+            >AutoSerwis</a
+          >
+
+          <button
+            style="margin: 10px"
+            (click)="logout()"
+            class="btn btn-danger"
+          >
+            Wyloguj się
+          </button>
+        </div>
+      </div>
+      <!-- Page content wrapper-->
+      <div id="page-content-wrapper">
+        <!-- Top navigation-->
+        <nav
+          style="
+            margin-bottom: 20px;
+            background: linear-gradient(
+              90deg,
+              rgba(2, 0, 36, 1) 0%,
+              rgba(9, 9, 121, 1) 35%,
+              rgba(0, 212, 255, 1) 100%
+            );
+          "
+          class="navbar navbar-expand-lg navbar-light bg-light border-bottom"
+        >
+          <div class="container-fluid">
+            <button
+              class="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <h4 class="float-left text-light" *ngIf="role === 'klient'">
+                Witaj,<br />
+                {{ fullName }}
+              </h4>
+              <h4 class="float-left text-light" *ngIf="role === 'admin'">
+                Witaj,<br />
+                {{ fullName }}<br /><small class="font-weight-bold text-danger"
+                  >Panel administratora</small
+                >
+              </h4>
+              <h4 class="float-left text-light" *ngIf="role === 'serwisant'">
+                Witaj,<br />
+                {{ fullName }}<br /><small class="font-weight-bold text-success"
+                  >Panel serwisanta</small
+                >
+              </h4>
+
+              <h4 class="float-left text-light" *ngIf="role === 'magazynier'">
+                Witaj,<br />
+                {{ fullName }}<br /><small class="font-weight-bold text-success"
+                  >Panel magazyniera</small
+                >
+              </h4>
+              <ul class="navbar-nav ms-auto mt-2 mt-lg-0"></ul>
+            </div>
+          </div>
+        </nav>
+        <!-- Page content-->
+        <div style="display: flex" class="container-fluid">
+          <div *ngIf="role === 'admin'" class="role">
+            <h3 class="mt-1">Zarządzaj użytkownikami:</h3>
+            <ul *ngFor="let user of users">
+              <li>
+                <div class="bg-dark text-light p-2">
+                  <span style="font-weight: bold"
+                    >Użytkownik: {{ user.username }}</span
+                  ><br />
+                  Uprawnienia:
+                  {{ user.role }}
+                </div>
+
+                Zmień rolę na:
+                <a
+                  class="text-success forget"
+                  (click)="newRoleSerwisantCustomer(user.id)"
+                  >serwisant</a
+                >
+
+                <a
+                  style="margin-left: 6px"
+                  class="text-primary forget"
+                  (click)="newRoleMagazynierCustomer(user.id)"
+                  >magazynier</a
+                >
+
+                <a
+                  style="margin-left: 6px"
+                  class="text-primary forget"
+                  (click)="newRoleUserCustomer(user.id)"
+                  >klient</a
+                >
+                |
+
+                <a class="text-danger forget" (click)="deleteCustomer(user.id)"
+                  >Usuń konto</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div *ngIf="role === 'magazynier'" class="role">
+            <h4>Dodaj produkt</h4>
+            <form [formGroup]="addProductForm">
+              <div class="form-group pt-3">
+                <div
+                  class="input-field"
+                  [class.error]="
+                    addProductForm.controls['Name'].dirty &&
+                    addProductForm.hasError('required', 'Name')
+                  "
+                >
+                  <input
+                    formControlName="Name"
+                    type="text"
+                    placeholder="Nazwa"
+                  />
+                </div>
+              </div>
+              <small
+                *ngIf="
+                  addProductForm.controls['Name'].dirty &&
+                  addProductForm.hasError('required', 'Name')
+                "
+                class="text-danger"
+                >Musisz podać nazwę!</small
+              >
+              <div class="form-group pt-3">
+                <div
+                  class="input-field"
+                  [class.error]="
+                    addProductForm.controls['Model'].dirty &&
+                    addProductForm.hasError('required', 'Model')
+                  "
+                >
+                  <input
+                    formControlName="Model"
+                    type="text"
+                    placeholder="Model"
+                  />
+                </div>
+              </div>
+              <small
+                *ngIf="
+                  addProductForm.controls['Model'].dirty &&
+                  addProductForm.hasError('required', 'Model')
+                "
+                class="text-danger"
+                >Musisz podać model!</small
+              >
+              <div class="form-group pt-3">
+                <div
+                  class="input-field"
+                  [class.error]="
+                    addProductForm.controls['Description'].dirty &&
+                    addProductForm.hasError('required', 'Description')
+                  "
+                >
+                  <input
+                    formControlName="Description"
+                    type="text"
+                    placeholder="Opis"
+                  />
+                </div>
+              </div>
+              <small
+                *ngIf="
+                  addProductForm.controls['Description'].dirty &&
+                  addProductForm.hasError('required', 'Description')
+                "
+                class="text-danger"
+                >Musisz wprowadzić opis produktu!</small
+              >
+              <div class="form-group pt-3">
+                <div
+                  class="input-field"
+                  [class.error]="
+                    addProductForm.controls['Price'].dirty &&
+                    addProductForm.hasError('required', 'Price')
+                  "
+                >
+                  <input
+                    formControlName="Price"
+                    type="text"
+                    placeholder="Cena"
+                  />
+                </div>
+              </div>
+              <small
+                *ngIf="
+                  addProductForm.controls['Price'].dirty &&
+                  addProductForm.hasError('required', 'Price')
+                "
+                class="text-danger"
+                >Musisz wprowadzić cenę!</small
+              >
+
+              <div class="form-group pt-3">
+                <div
+                  class="input-field"
+                  [class.error]="
+                    addProductForm.controls['Quantity'].dirty &&
+                    addProductForm.hasError('required', 'Quantity')
+                  "
+                >
+                  <input
+                    formControlName="Quantity"
+                    type="text"
+                    placeholder="Ilość"
+                  />
+                </div>
+              </div>
+              <small
+                *ngIf="
+                  addProductForm.controls['Quantity'].dirty &&
+                  addProductForm.hasError('required', 'Quantity')
+                "
+                class="text-danger"
+                >Musisz wprowadzić ilość!</small
+              >
+
+              <button
+                (click)="onAddProduct()"
+                type="submit"
+                class="btn btn-primary btn-block mt-4"
+              >
+                Dodaj produkt
+              </button>
+            </form>
+          </div>
+
+          <div
+            *ngIf="role == 'magazynier' || role === 'serwisant'"
+            class="role"
+          >
+            <h4 *ngIf="role === 'magazynier'">Zarządzaj produktami</h4>
+            <h4 *ngIf="role == 'serwisant'">Pobierz produkty z magazynu</h4>
+            <div *ngIf="role === 'magazynier' || 'serwisant'">
+              <ul *ngFor="let product of products">
+                <li>
+                  <span
+                    class="w-100 p-2 bg-dark text-light"
+                    style="display: inline-flex"
+                    ><span style="margin-right: 5px; font-weight: bold"
+                      >Nazwa: {{ product.name }}
+                    </span>
+                    | Model: {{ product.model }} |
+                    <span style="margin-left: 5px; font-weight: bold">
+                      Ilość: {{ product.quantity }}</span
+                    ></span
+                  ><br /><input
+                    id="quantityToAdd"
+                    type="text"
+                    value="0"
+                  /><span> </span
+                  ><a
+                    *ngIf="role === 'magazynier'"
+                    style="margin-left: 10px"
+                    class="text-success forget"
+                    (click)="addQuantityProduct(product.id)"
+                    >Dodaj</a
+                  ><a
+                    style="margin-left: 10px"
+                    class="text-dangerforget"
+                    (click)="deleteQuantityProduct(product.id)"
+                    >Pobierz (podaną ilość)</a
+                  ><span *ngIf="role === 'magazynier'"> |</span
+                  ><a
+                    *ngIf="role === 'magazynier'"
+                    style="margin-left: 5px"
+                    class="text-danger forget"
+                    (click)="deleteAllProducts(product.id)"
+                    >Usuń produkt</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div *ngIf="role === 'klient'" class="role">
+            <h4>Umów wizytę</h4>
+            <form [formGroup]="addTransactionForm">
+              <div class="form-group pt-3">
+                <div
+                  class="input-field"
+                  [class.error]="
+                    addTransactionForm.controls['FirstName'].dirty &&
+                    addTransactionForm.hasError('required', 'FirstName')
+                  "
+                >
+                  <input
+                    formControlName="FirstName"
+                    type="text"
+                    placeholder="Imię i nazwisko"
+                  />
+                </div>
+              </div>
+              <small
+                *ngIf="
+                  addTransactionForm.controls['FirstName'].dirty &&
+                  addTransactionForm.hasError('required', 'FirstName')
+                "
+                class="text-danger"
+                >Musisz podać imię i nazwisko!</small
+              >
+              <div class="form-group pt-3">
+                <div
+                  class="input-field"
+                  [class.error]="
+                    addTransactionForm.controls['email'].dirty &&
+                    addTransactionForm.hasError('required', 'email')
+                  "
+                >
+                  <input
+                    formControlName="email"
+                    type="text"
+                    placeholder="E-mail"
+                  />
+                </div>
+              </div>
+              <small
+                *ngIf="
+                  addTransactionForm.controls['email'].dirty &&
+                  addTransactionForm.hasError('required', 'email')
+                "
+                class="text-danger"
+                >Musisz podać email!</small
+              >
+              <div class="form-group pt-3">
+                <div
+                  class="input-field"
+                  [class.error]="
+                    addTransactionForm.controls['description'].dirty &&
+                    addTransactionForm.hasError('required', 'description')
+                  "
+                >
+                  <input
+                    formControlName="description"
+                    type="text"
+                    placeholder="Opis"
+                  />
+                </div>
+              </div>
+              <small
+                *ngIf="
+                  addTransactionForm.controls['description'].dirty &&
+                  addTransactionForm.hasError('required', 'description')
+                "
+                class="text-danger"
+                >Musisz wprowadzić opis wizyty!</small
+              >
+              <div class="form-group pt-3">
+                <div
+                  class="input-field"
+                  [class.error]="
+                    addTransactionForm.controls['date'].dirty &&
+                    addTransactionForm.hasError('required', 'date')
+                  "
+                >
+                  <input
+                    formControlName="date"
+                    type="text"
+                    placeholder="Data wizyty"
+                  />
+                </div>
+              </div>
+              <small
+                *ngIf="
+                  addTransactionForm.controls['date'].dirty &&
+                  addTransactionForm.hasError('required', 'date')
+                "
+                class="text-danger"
+                >Musisz wprowadzić datę wizyty!</small
+              >
+
+              <div class="form-group pt-3">
+                <div
+                  class="input-field"
+                  [class.error]="
+                    addTransactionForm.controls['car'].dirty &&
+                    addTransactionForm.hasError('required', 'car')
+                  "
+                >
+                  <input
+                    formControlName="car"
+                    type="text"
+                    placeholder="Marka samochodu"
+                  />
+                </div>
+              </div>
+              <small
+                *ngIf="
+                  addTransactionForm.controls['car'].dirty &&
+                  addTransactionForm.hasError('required', 'car')
+                "
+                class="text-danger"
+                >Musisz wprowadzić markę samochodu!</small
+              >
+              <div class="form-group pt-3">
+                <div
+                  class="input-field"
+                  [class.error]="
+                    addTransactionForm.controls['model'].dirty &&
+                    addTransactionForm.hasError('required', 'model')
+                  "
+                >
+                  <input
+                    formControlName="model"
+                    type="text"
+                    placeholder="Model samochodu"
+                  />
+                </div>
+              </div>
+              <small
+                *ngIf="
+                  addTransactionForm.controls['model'].dirty &&
+                  addTransactionForm.hasError('required', 'model')
+                "
+                class="text-danger"
+                >Musisz wprowadzić model samochodu!</small
+              >
+
+              <button
+                (click)="onAddTransaction()"
+                type="submit"
+                class="btn btn-primary btn-block mt-4"
+              >
+                Umów wizytę
+              </button>
+            </form>
+          </div>
+          <div style="margin-left: 50px">
+            <div *ngIf="role === 'klient' || 'magazynier'" class="role">
+              <h4 *ngIf="role === 'klient'">Twoje wizyty</h4>
+              <h4 *ngIf="role === 'serwisant'">Zarządzaj wizytami</h4>
+
+              <ul>
+                <li class="mb-3" *ngFor="let transaction of transactions">
+                  <div
+                    *ngIf="
+                      role === 'admin' ||
+                      role === 'magazynier' ||
+                      role === 'serwisant' ||
+                      fullName === transaction.firstName
+                    "
+                  >
+                    <span class="text-primary">STATUS:</span>
+                    {{ transaction.status }} | E-mail: {{ transaction.email }} |
+                    Samochód: {{ transaction.car }} | |
+
+                    <span
+                      *ngIf="fullName === transaction.firstName"
+                      class="p-1 bg-dark text-light"
+                      >Data wizyty: {{ transaction.date }}</span
+                    >
+                    <a
+                      *ngIf="role === 'serwisant'"
+                      class="text-danger forget"
+                      style="margin-left: 10px; margin-bottom: 5px"
+                      (click)="declineTransaction(transaction.id)"
+                      >Odrzuć wizytę<br
+                    /></a>
+
+                    <a
+                      *ngIf="role === 'klient'"
+                      class="text-danger forget"
+                      style="margin-left: 10px"
+                      (click)="deleteTransaction(transaction.id)"
+                      >Anuluj wizytę</a
+                    >
+                    <span
+                      style="display: inline-block; margin-top: 5px"
+                      *ngIf="role === 'serwisant'"
+                      class="p-1 bg-warning"
+                      >Opis wizyty: {{ transaction.description }}</span
+                    ><br />
+
+                    <span
+                      style="display: inline-block"
+                      class="p-1 bg-info text-dark"
+                      >Koszt serwisu: {{ transaction.totalcost }}</span
+                    >
+                    <div class="d-flex align-items-center">
+                      <form [formGroup]="totalcostTransactionForm">
+                        <div class="form-group pt-3">
+                          <div
+                            class="input-field"
+                            [class.error]="
+                              totalcostTransactionForm.controls['totalcost']
+                                .dirty &&
+                              totalcostTransactionForm.hasError(
+                                'required',
+                                'totalcost'
+                              )
+                            "
+                          >
+                            <input
+                              *ngIf="role === 'serwisant'"
+                              id="totalcostValue"
+                              formControlName="totalcost"
+                              type="text"
+                              placeholder="Koszt"
+                            />
+                          </div>
+                        </div>
+                        <small
+                          *ngIf="
+                            totalcostTransactionForm.controls['totalcost']
+                              .dirty &&
+                            totalcostTransactionForm.hasError(
+                              'required',
+                              'totalcost'
+                            )
+                          "
+                          class="text-danger"
+                          >Musisz podać nazwę!</small
+                        >
+                      </form>
+
+                      <button
+                        style="margin-left: 10px"
+                        class="btn btn-success mt-3 ml-2"
+                        (click)="totalcostTransaction(transaction.id)"
+                        *ngIf="role === 'serwisant'"
+                      >
+                        Wprowadź
+                      </button>
+                    </div>
+                    <div>
+                      <button
+                        *ngIf="role === 'serwisant'"
+                        id="margin"
+                        value="{{ transaction.margin }}"
+                        type="text"
+                        disabled
+                      >
+                        Marża: {{ transaction.margin }} %
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="js/scripts.js"></script>
+  </body>
+</html>

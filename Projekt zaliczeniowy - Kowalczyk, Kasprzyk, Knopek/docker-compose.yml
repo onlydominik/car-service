@@ -1,0 +1,35 @@
+version: '3.4'
+services:
+  programowanie_lab2:
+    image: ${DOCKER_REGISTRY-}programowanielab2
+    build:
+      context: .
+      dockerfile: Programowanie_Lab2\Dockerfile
+    ports:
+     - "60977:8081"
+    
+  
+
+  db:
+    container_name: 'mysql-db'
+    image: mysql
+    ports:
+      - 3307:3306
+    environment: 
+      MYSQL_ROOT_PASSWORD: Domcio112!
+      MYSQL_ROOT_USER: root
+      MYSQL_DATABASE: 'programowanieZaawansowane'
+    volumes:
+      - ./mysql-dump:/docker-entrypoint-initdb.d
+
+      
+  angular-app: 
+    build: 
+        dockerfile: appname/Dockerfile
+    container_name: angular-app
+    ports:
+        - 4200:4200
+
+
+
+

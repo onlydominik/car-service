@@ -1,0 +1,145 @@
+<div class="outer">
+  <div class="container">
+    <div class="row">
+      <div class="offset-md-2 col-lg-5 col-md-7 offset-lg-4 offset-md-3">
+        <div class="dashboard border bg-white">
+          <div class="dashboard-heading">
+            <h3 class="pt-3 font-weight-bold">Zarejestruj się</h3>
+          </div>
+          <div class="dashboard-body p-3">
+            <form [formGroup]="signUpForm">
+              <div class="form-group pt-3">
+                <div
+                  class="input-field"
+                  [class.error]="
+                    signUpForm.controls['firstName'].dirty &&
+                    signUpForm.hasError('required', 'firstName')
+                  "
+                >
+                  <input
+                    formControlName="firstName"
+                    type="text"
+                    placeholder="Imię"
+                  />
+                </div>
+              </div>
+              <small
+                *ngIf="
+                  signUpForm.controls['firstName'].dirty &&
+                  signUpForm.hasError('required', 'firstName')
+                "
+                class="text-danger"
+                >Musisz podać swoję imię!</small
+              >
+              <div class="form-group pt-3">
+                <div
+                  class="input-field"
+                  [class.error]="
+                    signUpForm.controls['lastName'].dirty &&
+                    signUpForm.hasError('required', 'lastName')
+                  "
+                >
+                  <input
+                    formControlName="lastName"
+                    type="text"
+                    placeholder="Nazwisko"
+                  />
+                </div>
+              </div>
+              <small
+                *ngIf="
+                  signUpForm.controls['lastName'].dirty &&
+                  signUpForm.hasError('required', 'lastName')
+                "
+                class="text-danger"
+                >Musisz podać swoje nazwisko!</small
+              >
+              <div class="form-group pt-3">
+                <div
+                  class="input-field"
+                  [class.error]="
+                    signUpForm.controls['email'].dirty &&
+                    signUpForm.hasError('required', 'email')
+                  "
+                >
+                  <input
+                    formControlName="email"
+                    type="text"
+                    placeholder="E-mail"
+                  />
+                </div>
+              </div>
+              <small
+                *ngIf="
+                  signUpForm.controls['email'].dirty &&
+                  signUpForm.hasError('required', 'email')
+                "
+                class="text-danger"
+                >Musisz podać swój e-mail!</small
+              >
+              <div class="form-group pt-3">
+                <div
+                  class="input-field"
+                  [class.error]="
+                    signUpForm.controls['username'].dirty &&
+                    signUpForm.hasError('required', 'username')
+                  "
+                >
+                  <input
+                    formControlName="username"
+                    type="text"
+                    placeholder="Nazwa użytkownika"
+                  />
+                </div>
+              </div>
+              <small
+                *ngIf="
+                  signUpForm.controls['username'].dirty &&
+                  signUpForm.hasError('required', 'username')
+                "
+                class="text-danger"
+                >Musisz podać swoją nazwę użytkownika!</small
+              >
+              <div class="form-group pt-3">
+                <div
+                  class="input-field"
+                  [class.error]="
+                    signUpForm.controls['password'].dirty &&
+                    signUpForm.hasError('required', 'password')
+                  "
+                >
+                  <input
+                    formControlName="password"
+                    [type]="type"
+                    placeholder="Hasło"
+                  />
+                </div>
+              </div>
+              <small
+                *ngIf="
+                  signUpForm.controls['password'].dirty &&
+                  signUpForm.hasError('required', 'password')
+                "
+                class="text-danger"
+                >Musisz podać hasło!</small
+              >
+              <button
+                type="submit"
+                class="btn btn-primary btn-block mt-4 w-100"
+                (click)="onSignUp()"
+              >
+                Zarejestruj się
+              </button>
+              <div class="text-center pt-4 text-muted">
+                Masz już konto?
+                <a id="forget" class="font-weight-bold" href="/login"
+                  >Zaloguj się</a
+                >
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
